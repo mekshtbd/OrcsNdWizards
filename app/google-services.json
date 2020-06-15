@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "461048134816",
+    "firebase_url": "https://cardgame-3f5b2.firebaseio.com",
+    "project_id": "cardgame-3f5b2",
+    "storage_bucket": "cardgame-3f5b2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:461048134816:android:a69915ad5e4bd656aa1dc5",
+        "android_client_info": {
+          "package_name": "com.example.orcsndwizards"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "461048134816-t09hmmmousmmec5moq6lu0sov1s8q1kv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2v8uo5fsd8bVfdXKHpzZn_pVbxV2pDi0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "461048134816-t09hmmmousmmec5moq6lu0sov1s8q1kv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

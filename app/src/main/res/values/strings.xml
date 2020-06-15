@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">OrcsNdWizards</string>
+    <string name="card_name">Name :</string>
+    <string name="card_value">Value :</string>
+    <string name="log_in">Iniciar Sesión</string>
+    <string name="user">Usuario</string>
+    <string name="pass">Contraseña</string>
+    <string name="register_button">Registrar</string>
+    <string name="loging_button">Acceder</string>
+    <string name="play_button">Buscar partida</string>
+    <string name="title">Orcs\'nd Wizards</string>
+    <string name="cancel_button">Cancelar</string>
+    <string name="logout_button">Cerrar Sesión</string>
+    <string name="mail_hint">Email</string>
+    <string name="pass_hint">Contraseña</string>
+</resources>
