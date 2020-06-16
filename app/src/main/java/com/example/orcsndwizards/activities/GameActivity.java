@@ -35,9 +35,12 @@ public class GameActivity extends AppCompatActivity {
 
         setRecyclerView();
 
+
+
     }
 
     private void setRecyclerView() {
+        MyDecorator decorator = new MyDecorator(30);
         ArrayList<Card> hand = new ArrayList<>();
         hand.add(new Card("Orc","20"));
         hand.add(new Card("Orc","20"));
@@ -48,7 +51,6 @@ public class GameActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         playerHand.setLayoutManager(layoutManager);
         playerHand.setAdapter(playerAdapter);
-        MyDecorator decorator = new MyDecorator(10);
         playerHand.addItemDecoration(decorator);
 
         ArrayList<Card> opponentHand2 = new ArrayList<>();
