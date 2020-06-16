@@ -1,13 +1,16 @@
-package com.example.orcsndwizards;
+package com.example.orcsndwizards.objects;
+
+import com.example.orcsndwizards.R;
 
 public class Card {
     private int idPic;
     private String name;
-    private int value;
+    private String value;
 
-    public Card(String name, int value) {
+    public Card(String name, String value) {
         this.name = name;
-        this.value = value;
+        if(this.name.equals("")) this.value = "";
+        else this.value = value;
         selectedPic();
     }
 
@@ -16,6 +19,8 @@ public class Card {
             case "Orc" : this.idPic = R.drawable.orc;
                 break;
             case "Wizard" : this.idPic = R.drawable.wizard;
+                break;
+            case "" : this.idPic = R.drawable.card;
                 break;
         }
     }
@@ -36,11 +41,11 @@ public class Card {
         this.name = name;
     }
 
-    public int getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

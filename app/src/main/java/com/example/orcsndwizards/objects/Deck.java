@@ -1,4 +1,4 @@
-package com.example.orcsndwizards;
+package com.example.orcsndwizards.objects;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +19,7 @@ public class Deck {
                 value = 1;
                 gone = true;
             }
-            this.deck.add(new Card(name, value));
+            this.deck.add(new Card(name, String.valueOf(value)));
             value++;
         }
         Collections.shuffle(this.deck);

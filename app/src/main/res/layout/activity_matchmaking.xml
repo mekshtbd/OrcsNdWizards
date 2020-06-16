@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MatchmakingActivity"
+    tools:context=".activities.MatchmakingActivity"
     android:orientation="vertical"
     android:layout_marginLeft="25dp"
     android:layout_marginRight="25dp">

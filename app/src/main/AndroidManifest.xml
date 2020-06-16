@@ -9,9 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MatchmakingActivity"></activity>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".LoggingActivity">
+        <activity android:name=".activities.LoggingActivity" />
+        <activity android:name=".activities.MatchmakingActivity" />
+        <activity android:name=".activities.GameActivity" android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

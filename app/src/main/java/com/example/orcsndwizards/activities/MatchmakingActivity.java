@@ -1,23 +1,19 @@
-package com.example.orcsndwizards;
+package com.example.orcsndwizards.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.example.orcsndwizards.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,10 +21,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.sql.SQLOutput;
-
-import javax.net.ssl.SSLContext;
 
 public class MatchmakingActivity extends AppCompatActivity {
 
@@ -47,33 +39,38 @@ public class MatchmakingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_matchmaking);
 
-        getIntentUser();
+        setup();
 
+        setMatchRef();
+
+        setButtonClickers();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        logedUserKey = currentUser.getUid();
+    }
+
+    private void setup(){
         database = FirebaseDatabase.getInstance();
         matchRef = database.getReference("Matchmaking");
         player1Ref = matchRef.child("player1");
         player2Ref = matchRef.child("player2");
-
-        setMatchRef();
-
         playBtn = findViewById(R.id.playBtn);
         cancelBtn = findViewById(R.id.cancelBtn);
         logOutBtn = findViewById(R.id.logOutBtn);
         searchingAnim = findViewById(R.id.searchingView);
+    }
+    private void setButtonClickers() {
 
         playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                playBtn.setVisibility(View.INVISIBLE);
-                playBtn.setEnabled(false);
-                cancelBtn.setVisibility(View.VISIBLE);
-                cancelBtn.setEnabled(true);
-                logOutBtn.setEnabled(false);
-                Spannable logoutColor = new SpannableString(logOutBtn.getText().toString());
-                logoutColor.setSpan(new ForegroundColorSpan(Color.GRAY),0,13,0);
-                logOutBtn.setText(logoutColor);
-                searchingAnim.setVisibility(View.VISIBLE);
+                setLayoutChanges(true);
 
                 matchRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -109,22 +106,14 @@ public class MatchmakingActivity extends AppCompatActivity {
                     }
                 });
 
-                }
+            }
         });
 
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                cancelBtn.setVisibility(View.INVISIBLE);
-                cancelBtn.setEnabled(false);
-                playBtn.setVisibility(View.VISIBLE);
-                playBtn.setEnabled(true);
-                logOutBtn.setEnabled(true);
-                Spannable logoutColor = new SpannableString(logOutBtn.getText().toString());
-                logoutColor.setSpan(new ForegroundColorSpan(Color.RED),0,13,0);
-                logOutBtn.setText(logoutColor);
-                searchingAnim.setVisibility(View.INVISIBLE);
+                setLayoutChanges(false);
 
                 matchRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -138,13 +127,11 @@ public class MatchmakingActivity extends AppCompatActivity {
                             player2Ref.setValue("");
                         }
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
                 });
-
             }
         });
 
@@ -183,6 +170,32 @@ public class MatchmakingActivity extends AppCompatActivity {
         });
 
     }
+
+
+    private void setLayoutChanges(boolean playButton) {
+        if(playButton){
+            playBtn.setVisibility(View.INVISIBLE);
+            playBtn.setEnabled(false);
+            cancelBtn.setVisibility(View.VISIBLE);
+            cancelBtn.setEnabled(true);
+            logOutBtn.setEnabled(false);
+            Spannable logoutColor = new SpannableString(logOutBtn.getText().toString());
+            logoutColor.setSpan(new ForegroundColorSpan(Color.GRAY),0,13,0);
+            logOutBtn.setText(logoutColor);
+            searchingAnim.setVisibility(View.VISIBLE);
+        }else{
+            cancelBtn.setVisibility(View.INVISIBLE);
+            cancelBtn.setEnabled(false);
+            playBtn.setVisibility(View.VISIBLE);
+            playBtn.setEnabled(true);
+            logOutBtn.setEnabled(true);
+            Spannable logoutColor = new SpannableString(logOutBtn.getText().toString());
+            logoutColor.setSpan(new ForegroundColorSpan(Color.RED),0,13,0);
+            logOutBtn.setText(logoutColor);
+            searchingAnim.setVisibility(View.INVISIBLE);
+        }
+    }
+
     private String[] getPlayerState(DataSnapshot dataSnapshot){
 
         String[] players = new String[2];
@@ -200,25 +213,24 @@ public class MatchmakingActivity extends AppCompatActivity {
     private void startGameActivity(String player2Key){
 
         DatabaseReference gameRef = database.getReference("Games");
+        String gameRefPath = "";
+
+        // Player 2 - Player 1
         if(player2Key.equals("")){
-           gameRef = gameRef.child(logedUserKey);
-           gameRef.push().setValue(logedUserKey);
+            gameRefPath = "Games/"+logedUserKey;
+            gameRef.child(logedUserKey+"/"+logedUserKey).setValue(logedUserKey);
         }else{
-            gameRef = gameRef.child(player2Key);
-            gameRef.push().setValue(logedUserKey);
+            gameRefPath = "Games/"+player2Key;
+            gameRef.child(player2Key+"/"+logedUserKey).setValue(logedUserKey);
         }
 
         player1Ref.setValue("");
         player2Ref.setValue("");
 
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        intent.putExtra("userKey",logedUserKey);
+        Intent intent = new Intent(getApplicationContext(), GameActivity.class);
+        intent.putExtra("gamePath",gameRefPath);
         startActivity(intent);
         finish();
     }
 
-    private void getIntentUser() {
-        Intent intent = getIntent();
-        logedUserKey = intent.getStringExtra("userKey");
-    }
 }

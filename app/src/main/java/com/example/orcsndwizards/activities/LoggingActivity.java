@@ -1,20 +1,17 @@
-package com.example.orcsndwizards;
+package com.example.orcsndwizards.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
+import com.example.orcsndwizards.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -24,7 +21,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 
@@ -56,14 +52,16 @@ public class LoggingActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 getData();
-                if(!email.isEmpty() && !pass.isEmpty()){
+
+                if(checkCredentials()){
                     FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
-                                Toast.makeText(LoggingActivity.this, "Usuario registrado", Toast.LENGTH_SHORT).show();
+                                showRegisterSuccess();
                             }else{
-                                showError();
+                                String message = "Error de autenticación";
+                                showError(message);
                             }
                         }
                     });
@@ -75,7 +73,8 @@ public class LoggingActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 getData();
-                if(!email.isEmpty() && !pass.isEmpty()){
+
+                if(checkCredentials()){
                     FirebaseAuth.getInstance().signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -84,18 +83,20 @@ public class LoggingActivity extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         FirebaseUser user = auth.getCurrentUser();
-                                        boolean loged = false;
+                                        boolean logged = false;
                                         for(DataSnapshot dps : dataSnapshot.getChildren()){
                                             if(dps.getKey().equals(user.getUid())){
-                                                loged = true;
+                                                logged = true;
                                             }
                                         }
-                                        if(!loged) {
+                                        if(!logged) {
                                             ref.child(user.getUid()).setValue(user.getUid());
-                                            startRoomActivity(user.getUid());
+                                            startRoomActivity();
                                         }
-                                        else
-                                            Toast.makeText(LoggingActivity.this, "Usuario ya logeado", Toast.LENGTH_SHORT).show();
+                                        else{
+                                            String message = "El usuario ya ha accedido";
+                                            showError(message);
+                                        }
                                     }
 
                                     @Override
@@ -104,7 +105,8 @@ public class LoggingActivity extends AppCompatActivity {
                                     }
                                 });
                             }else{
-                                showError();
+                                String message = "Usuario o contraseña equivocados";
+                                showError(message);
                             }
                         }
                     });
@@ -114,7 +116,19 @@ public class LoggingActivity extends AppCompatActivity {
 
         setLayoutVisuals();
     }
+    private boolean checkCredentials(){
+        boolean correct = false;
 
+        if(pass.length() < 8){
+            String message = "La contraseña debe tener 8 o más carácteres";
+            showError(message);
+        }
+        else if(!email.isEmpty()){
+            correct = true;
+        }
+
+        return correct;
+    }
     private void getData() {
         email = inputUser.getText().toString();
         pass = inputMail.getText().toString();
@@ -122,10 +136,18 @@ public class LoggingActivity extends AppCompatActivity {
         inputMail.getText().clear();
     }
 
-    private void showError(){
+    private void showRegisterSuccess(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Éxito");
+        builder.setMessage("Registro exitoso");
+        builder.setPositiveButton("Aceptar", null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    private void showError(String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Error");
-        builder.setMessage("Error autenticando usuario");
+        builder.setMessage(message);
         builder.setPositiveButton("Aceptar",null);
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -155,10 +177,10 @@ public class LoggingActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        final FirebaseUser currentUser = auth.getCurrentUser();
+        FirebaseUser currentUser = auth.getCurrentUser();
         if(currentUser!=null) {
             ref.child(currentUser.getUid()).setValue(currentUser.getUid());
-            startRoomActivity(currentUser.getUid());
+            startRoomActivity();
         }
     }
 
@@ -198,9 +220,8 @@ public class LoggingActivity extends AppCompatActivity {
     }
 
     // Starts Room activity
-    private void startRoomActivity(String userKey){
+    private void startRoomActivity(){
         Intent intent = new Intent(getApplicationContext(), MatchmakingActivity.class);
-        intent.putExtra("userKey",userKey);
         startActivity(intent);
         finish();
     }

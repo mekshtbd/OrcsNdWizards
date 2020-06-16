@@ -1,4 +1,4 @@
-package com.example.orcsndwizards;
+package com.example.orcsndwizards.recycler;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -9,6 +9,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.orcsndwizards.R;
+import com.example.orcsndwizards.objects.Card;
+
 import java.util.ArrayList;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
@@ -16,13 +19,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     //Dataset
     private ArrayList<Card> hand;
     private Activity activity;
-    private boolean playTurn;
 
     // Constructor
-    public MyAdapter(ArrayList<Card> hand, Activity activity){
+    public MyAdapter(ArrayList<Card> hand){
         this.hand = hand;
-        this.activity = activity;
-        this.playTurn = true;
     }
     @NonNull
     @Override
@@ -43,16 +43,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         return this.hand.size();
     }
 
-    public void setTurn(boolean turn){
-        this.playTurn = turn;
-    }
     public ArrayList<Card> getHand() {
         return hand;
     }
-    public Activity getActivity(){
-        return this.activity;
-    }
-
     public void setHand(ArrayList<Card> hand) {
         this.hand = hand;
     }
@@ -72,24 +65,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         // On Card clicked
         @Override
         public void onClick(View v) {
-            if(playTurn){
-                playCard(v);
-
-                int position = this.getLayoutPosition();
-                Card card = hand.get(position);
-                ImageView imageCard = getActivity().findViewById(R.id.firstCardPlayed);
-                TextView textValue = getActivity().findViewById(R.id.textValue);
-                imageCard.setImageResource(card.getIdPic());
-                textValue.setText(String.valueOf(card.getValue()));
-                hand.remove(position);
-                //hand.add(position,new Card("Wizard",15));
-                notifyDataSetChanged();
-                playTurn = false;
-            }
-        }
-
-        private void playCard(View v) {
-
+            hand.remove(hand.get(this.getAdapterPosition()));
+            notifyDataSetChanged();
         }
     }
 }

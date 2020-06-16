@@ -1,4 +1,4 @@
-package com.example.orcsndwizards;
+package com.example.orcsndwizards.objects;
 
 import java.io.Serializable;
 

@@ -1,0 +1,75 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="20dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/opponentHand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="50dp">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="30dp">
+
+                <ImageView
+                    android:id="@+id/deck"
+                    android:layout_width="100dp"
+                    android:layout_height="150dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/card"/>
+
+                <TextView
+                    android:id="@+id/deckCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="20"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:layout_marginTop="120dp"
+                    android:layout_marginStart="70dp"
+                    app:layout_constraintStart_toStartOf="@+id/deck"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginLeft="70dp" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageView
+                android:id="@+id/firstCardPlayed"
+                android:layout_width="100dp"
+                android:layout_height="150dp"
+                android:layout_marginLeft="80dp"
+                app:srcCompat="@drawable/card"
+                android:layout_marginStart="80dp" />
+
+            <ImageView
+                android:id="@+id/secondCardPlayed"
+                android:layout_width="100dp"
+                android:layout_height="150dp"
+                android:layout_marginLeft="50dp"
+                app:srcCompat="@drawable/card"
+                android:layout_marginStart="50dp" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/playerHand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+
+</ScrollView>
