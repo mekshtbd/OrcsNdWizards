@@ -1,82 +1,84 @@
 package com.example.orcsndwizards.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.orcsndwizards.objects.Card;
-import com.example.orcsndwizards.recycler.MyAdapter;
+import com.example.orcsndwizards.gameobjects.Game;
+import com.example.orcsndwizards.gameobjects.Card;
+import com.example.orcsndwizards.gameobjects.Deck;
 import com.example.orcsndwizards.R;
-import com.example.orcsndwizards.recycler.MyDecorator;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 
 public class GameActivity extends AppCompatActivity {
-    private FirebaseDatabase database;
     private DatabaseReference gameRef;
 
-    private RecyclerView playerHand;
-    private RecyclerView opponentHand;
+    private boolean turn;
+    private Game game;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        setup();
+        getMatchmakingIntent();
 
-        //getMatchmakingIntent();
-
-        setRecyclerView();
-
-
+        startGame();
 
     }
+    private void startGame() {
+        final Deck deck = new Deck();
+        gameRef.child("turn").setValue(true);
+        if(turn){
+            deck.createDeck();
+            gameRef.child("deck").setValue(deck.getCards());
+            game = new Game(turn, deck, gameRef, this);
+            game.start();
+        }else{
+            DatabaseReference deckRef = gameRef.child("deck");
+            deckRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.getValue()!=null){
+                        ArrayList<Card> deckCards = new ArrayList<>();
+                        for(DataSnapshot card : dataSnapshot.getChildren()){
+                            deckCards.add(card.getValue(Card.class));
+                        }
+                        deck.setCards(deckCards);
+                        game = new Game(turn, deck, gameRef, GameActivity.this);
+                        game.start();
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-    private void setRecyclerView() {
-        MyDecorator decorator = new MyDecorator(30);
-        ArrayList<Card> hand = new ArrayList<>();
-        hand.add(new Card("Orc","20"));
-        hand.add(new Card("Orc","20"));
-        hand.add(new Card("Orc","20"));
-        hand.add(new Card("Orc","20"));
-        hand.add(new Card("Orc","20"));
-        MyAdapter playerAdapter = new MyAdapter(hand);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
-        playerHand.setLayoutManager(layoutManager);
-        playerHand.setAdapter(playerAdapter);
-        playerHand.addItemDecoration(decorator);
-
-        ArrayList<Card> opponentHand2 = new ArrayList<>();
-        opponentHand2.add(new Card("",""));
-        opponentHand2.add(new Card("",""));
-        opponentHand2.add(new Card("",""));
-        opponentHand2.add(new Card("",""));
-        opponentHand2.add(new Card("",""));
-        MyAdapter opponentAdapter = new MyAdapter(opponentHand2);
-        LinearLayoutManager opponenManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
-        opponentHand.setLayoutManager(opponenManager);
-        opponentHand.setAdapter(opponentAdapter);
-        opponentHand.addItemDecoration(decorator);
-
-    }
-
-    private void setup() {
-        database = FirebaseDatabase.getInstance();
-        playerHand = findViewById(R.id.playerHand);
-        opponentHand = findViewById(R.id.opponentHand);
+                }
+            });
+        }
     }
 
     private void getMatchmakingIntent() {
         Intent intent = getIntent();
         String gamePath = intent.getStringExtra("gamePath");
+        turn = intent.getBooleanExtra("turn",false);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
         gameRef = database.getReference(gamePath);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent intent = new Intent(this.getApplicationContext(), MatchmakingActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

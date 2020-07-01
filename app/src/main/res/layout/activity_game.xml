@@ -1,75 +1,192 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="20dp">
+    android:scrollbars="none"
+    android:background="@drawable/backgroundd">
     <LinearLayout
+        android:id="@+id/exteriorBorder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/opponentHand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:layoutAnimation="@anim/recycler_layout_animation"
+            android:layout_marginTop="10dp"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="50dp">
+            android:layout_marginTop="30dp"
+            android:orientation="horizontal">
+
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginLeft="30dp">
+                android:id="@+id/deck"
+                android:layout_width="40dp"
+                android:layout_height="70dp"
+                android:layout_marginStart="80dp"
+                android:layout_marginLeft="80dp">
 
                 <ImageView
-                    android:id="@+id/deck"
-                    android:layout_width="100dp"
-                    android:layout_height="150dp"
+                    android:id="@+id/deckView"
+                    style="@style/borderBlack"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/card"
+                    android:scaleType="fitXY"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/card"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/deckCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="20"
                     android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:layout_marginTop="120dp"
-                    android:layout_marginStart="70dp"
-                    app:layout_constraintStart_toStartOf="@+id/deck"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginLeft="70dp" />
+                    android:textSize="9sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/deckView"
+                    app:layout_constraintEnd_toEndOf="@+id/deckView" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <ImageView
-                android:id="@+id/firstCardPlayed"
-                android:layout_width="100dp"
-                android:layout_height="150dp"
-                android:layout_marginLeft="80dp"
-                app:srcCompat="@drawable/card"
-                android:layout_marginStart="80dp" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/firstCardLayout"
+                android:layout_width="40dp"
+                android:layout_height="70dp"
+                android:layout_marginStart="100dp"
+                android:layout_marginLeft="100dp">
 
-            <ImageView
-                android:id="@+id/secondCardPlayed"
-                android:layout_width="100dp"
-                android:layout_height="150dp"
+                <ImageView
+                    android:id="@+id/firstCardPlayed"
+                    style="@style/borderBlack"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/firstCardValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginLeft="3dp"
+                    android:textColor="@color/black"
+                    android:textSize="9sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/firstCardPlayed" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/secondCardLayout"
+                android:layout_width="40dp"
+                android:layout_height="70dp"
+                android:layout_marginStart="60dp"
+                android:layout_marginLeft="60dp">
+
+                <ImageView
+                    android:id="@+id/secondCardPlayed"
+                    style="@style/borderBlack"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/secondCardValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginLeft="3dp"
+                    android:textColor="@color/black"
+                    android:textSize="9sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/secondCardPlayed" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="50dp"
                 android:layout_marginLeft="50dp"
-                app:srcCompat="@drawable/card"
-                android:layout_marginStart="50dp" />
-        </LinearLayout>
+                android:layout_marginTop="20dp">
 
+                <ImageView
+                    android:id="@+id/turnLight"
+                    style="@style/borderBlack"
+                    android:background="@color/green"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical"
+                android:gravity="right"
+                android:layout_marginEnd="50dp"
+                android:layout_marginRight="50dp">
+
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:gravity="center_horizontal"
+                    android:text="@string/player_1_points"
+                    android:textColor="@color/black"
+                    android:textSize="9sp" />
+
+                <TextView
+                    android:id="@+id/player1PointsView"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/medium_red"
+                    android:textSize="9sp"
+                    style="@style/borderBlack"/>
+
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white"
+                    android:gravity="center_horizontal"
+                    android:text="@string/player_2_points"
+                    android:textColor="@color/black"
+                    android:textSize="9sp" />
+
+                <TextView
+                    android:id="@+id/player2PointsView"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/medium_red"
+                    android:textSize="9sp"
+                    style="@style/borderBlack"/>
+            </LinearLayout>
+
+        </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/playerHand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:layout_gravity="center_horizontal" />
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center_horizontal"
+            android:layoutAnimation="@anim/recycler_layout_animation"
+            android:layout_marginBottom="10dp"/>
     </LinearLayout>
 
 </ScrollView>

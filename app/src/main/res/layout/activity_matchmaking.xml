@@ -1,42 +1,43 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MatchmakingActivity"
-    android:orientation="vertical"
-    android:layout_marginLeft="25dp"
-    android:layout_marginRight="25dp">
-
-    <ImageView
-        android:id="@+id/imageWiz"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:srcCompat="@drawable/wizard"
-        android:layout_marginTop="10dp"/>
-
-    <TextView
-        android:id="@+id/textTitle"
+    android:layout_margin="20dp"
+    android:scrollbars="none">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/title"
-        android:gravity="center_horizontal"
-        android:textSize="30sp"
-        android:layout_marginTop="15dp"
-        android:textColor="@color/black"/>
+        tools:context=".activities.MatchmakingActivity"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/playBtn"
-        android:layout_width="200dp"
-        android:textSize="18sp"
-        android:textColor="@color/black"
-        android:layout_gravity="center_horizontal"
-        android:layout_height="wrap_content"
-        android:text="@string/play_button"
-        android:layout_marginTop="30dp"
-        style="@style/Widget.AppCompat.Light.ActionButton"
-        />
+        <ImageView
+            android:id="@+id/imageWiz"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:srcCompat="@drawable/wizard"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/textTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title"
+            android:gravity="center_horizontal"
+            android:textSize="30sp"
+            android:layout_marginTop="15dp"
+            android:textColor="@color/black"/>
+
+        <Button
+            android:id="@+id/playBtn"
+            android:layout_width="200dp"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content"
+            android:text="@string/play_button"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/button_effect_blue"/>
         <ProgressBar
             android:id="@+id/searchingView"
             android:layout_width="wrap_content"
@@ -44,45 +45,45 @@
             android:layout_gravity="center_horizontal"
             android:indeterminate="true"
             android:visibility="invisible"/>
-    <Button
-        android:id="@+id/cancelBtn"
-        android:layout_width="200dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_height="wrap_content"
-        android:text="@string/cancel_button"
-        android:enabled="false"
-        android:textColor="@color/red"
-        android:visibility="invisible"
-        style="@style/Widget.AppCompat.Light.ActionButton"
-        />
-    <androidx.constraintlayout.widget.ConstraintLayout
-
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_marginTop="20dp">
-
         <Button
-            android:id="@+id/logOutBtn"
-            style="@style/Widget.AppCompat.Light.ActionButton"
-            android:layout_width="100dp"
+            android:id="@+id/cancelBtn"
+            android:layout_width="200dp"
+            android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
-            android:text="@string/logout_button"
-            android:textColor="@color/red"
-            android:textSize="16sp"
-            android:layout_marginTop="25dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:text="@string/cancel_button"
+            android:enabled="false"
+            android:textColor="@color/white"
+            android:visibility="invisible"
+            android:background="@drawable/button_effect_red"
+            android:layout_marginTop="50dp"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
 
-        <ImageView
-            android:id="@+id/imageOrc"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginLeft="100dp"
-            app:layout_constraintStart_toEndOf="@+id/logOutBtn"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/orc" />
+            <Button
+                android:id="@+id/logOutBtn"
+                style="@style/Widget.AppCompat.Light.ActionButton"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="@string/logout_button"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:layout_marginTop="25dp"
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                android:background="@drawable/button_effect_orange"/>
 
-</LinearLayout>
+            <ImageView
+                android:id="@+id/imageOrc"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="end"
+                app:srcCompat="@drawable/orc"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</ScrollView>

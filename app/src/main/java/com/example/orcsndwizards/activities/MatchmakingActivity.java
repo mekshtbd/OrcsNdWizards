@@ -25,13 +25,12 @@ import com.google.firebase.database.ValueEventListener;
 public class MatchmakingActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
-    private DatabaseReference matchRef;
     private DatabaseReference player1Ref;
     private DatabaseReference player2Ref;
+    private DatabaseReference gameRef;
     private Button playBtn;
     private Button cancelBtn;
     private Button logOutBtn;
-    private ProgressBar searchingAnim;
     private String logedUserKey;
 
     @Override
@@ -41,10 +40,51 @@ public class MatchmakingActivity extends AppCompatActivity {
 
         setup();
 
+        setGameRef();
+
+        checkGameContinues();
+
         setMatchRef();
 
         setButtonClickers();
 
+    }
+
+    private void setGameRef() {
+        gameRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue()==null){
+                    gameRef.setValue(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void checkGameContinues() {
+        gameRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue()!=null){
+                    for(DataSnapshot dps : dataSnapshot.getChildren()){
+                        if(dps.getKey().contains(logedUserKey)){
+                            gameRef.child(dps.getKey()+"/gameStopped").setValue(true);
+                            gameRef.child(dps.getKey()).removeValue();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -55,14 +95,14 @@ public class MatchmakingActivity extends AppCompatActivity {
     }
 
     private void setup(){
+
         database = FirebaseDatabase.getInstance();
-        matchRef = database.getReference("Matchmaking");
-        player1Ref = matchRef.child("player1");
-        player2Ref = matchRef.child("player2");
+        player1Ref = database.getReference("Matchmaking/player1");
+        player2Ref = database.getReference("Matchmaking/player2");
+        gameRef = database.getReference("Games");
         playBtn = findViewById(R.id.playBtn);
         cancelBtn = findViewById(R.id.cancelBtn);
         logOutBtn = findViewById(R.id.logOutBtn);
-        searchingAnim = findViewById(R.id.searchingView);
     }
     private void setButtonClickers() {
 
@@ -71,26 +111,33 @@ public class MatchmakingActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 setLayoutChanges(true);
-
-                matchRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                player1Ref.addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                        String player1 = getPlayerState(dataSnapshot)[0];
-                        String player2 = getPlayerState(dataSnapshot)[1];
-
-                        if(!player1.equals("") && player2.equals("")){
-                            player2Ref.setValue(logedUserKey);
-                            startGameActivity("");
-                        }
-                        else if(player1.equals("")){
+                    public void onDataChange(@NonNull final DataSnapshot firstSnap) {
+                        if(firstSnap.getValue().equals("")){
+                            player1Ref.removeEventListener(this);
                             player1Ref.setValue(logedUserKey);
                             player2Ref.addValueEventListener(new ValueEventListener() {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if(!dataSnapshot.getValue().equals("")){
-                                        startGameActivity((String)dataSnapshot.getValue());
+                                public void onDataChange(@NonNull DataSnapshot secondSnap) {
+                                    if(!(secondSnap.getValue().equals(""))){
+                                        player2Ref.removeEventListener(this);
+                                        startGameActivity((String)secondSnap.getValue(), true);
                                     }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }else if(!(firstSnap.getValue().equals(logedUserKey))){
+                            player1Ref.removeEventListener(this);
+                            player2Ref.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot thirdSnap) {
+                                    player2Ref.setValue(logedUserKey);
+                                    player2Ref.removeEventListener(this);
+                                    startGameActivity((String)firstSnap.getValue(), false);
                                 }
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -115,17 +162,21 @@ public class MatchmakingActivity extends AppCompatActivity {
 
                 setLayoutChanges(false);
 
-                matchRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                player1Ref.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        String player1 = getPlayerState(dataSnapshot)[0];
-                        String player2 = getPlayerState(dataSnapshot)[1];
+                        player1Ref.removeEventListener(this);
+                        player1Ref.setValue("");
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        if(player1.equals(logedUserKey)){
-                            player1Ref.setValue("");
-                        }else if(player2.equals(logedUserKey)){
-                            player2Ref.setValue("");
-                        }
+                    }
+                });
+                player2Ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        player2Ref.removeEventListener(this);
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -149,30 +200,41 @@ public class MatchmakingActivity extends AppCompatActivity {
             }
         });
     }
+    private void startGameActivity(String playerKey, boolean turn){
 
+        player1Ref.setValue("");
+        player2Ref.setValue("");
+
+        String gameRefPath = "";
+
+        if(turn){
+            gameRefPath = "Games/"+logedUserKey+playerKey;
+        }
+        else gameRefPath = "Games/"+playerKey+logedUserKey;
+
+        Intent intent = new Intent(getApplicationContext(), GameActivity.class);
+        intent.putExtra("gamePath",gameRefPath);
+        intent.putExtra("turn",turn);
+        startActivity(intent);
+        finish();
+    }
     private void setMatchRef(){
-
-        matchRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        player1Ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String player1 = getPlayerState(dataSnapshot)[0];
-                String player2 = getPlayerState(dataSnapshot)[1];
-
-                if(player1 == null) player1Ref.setValue("");
-                if(player2 == null ) player2Ref.setValue("");
-
+                if(dataSnapshot.getValue()==null){
+                    player1Ref.setValue("");
+                    player2Ref.setValue("");
+                }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
-
     }
-
-
     private void setLayoutChanges(boolean playButton) {
+        ProgressBar searchingAnim = findViewById(R.id.searchingView);
         if(playButton){
             playBtn.setVisibility(View.INVISIBLE);
             playBtn.setEnabled(false);
@@ -190,47 +252,9 @@ public class MatchmakingActivity extends AppCompatActivity {
             playBtn.setEnabled(true);
             logOutBtn.setEnabled(true);
             Spannable logoutColor = new SpannableString(logOutBtn.getText().toString());
-            logoutColor.setSpan(new ForegroundColorSpan(Color.RED),0,13,0);
+            logoutColor.setSpan(new ForegroundColorSpan(Color.BLACK),0,13,0);
             logOutBtn.setText(logoutColor);
             searchingAnim.setVisibility(View.INVISIBLE);
         }
     }
-
-    private String[] getPlayerState(DataSnapshot dataSnapshot){
-
-        String[] players = new String[2];
-
-        int counter = 0;
-        for(DataSnapshot dps : dataSnapshot.getChildren()){
-            if(counter<=0) players[0] = (String) dps.getValue();
-            else players[1] = (String) dps.getValue();
-            counter++;
-        }
-
-        return players;
-    }
-
-    private void startGameActivity(String player2Key){
-
-        DatabaseReference gameRef = database.getReference("Games");
-        String gameRefPath = "";
-
-        // Player 2 - Player 1
-        if(player2Key.equals("")){
-            gameRefPath = "Games/"+logedUserKey;
-            gameRef.child(logedUserKey+"/"+logedUserKey).setValue(logedUserKey);
-        }else{
-            gameRefPath = "Games/"+player2Key;
-            gameRef.child(player2Key+"/"+logedUserKey).setValue(logedUserKey);
-        }
-
-        player1Ref.setValue("");
-        player2Ref.setValue("");
-
-        Intent intent = new Intent(getApplicationContext(), GameActivity.class);
-        intent.putExtra("gamePath",gameRefPath);
-        startActivity(intent);
-        finish();
-    }
-
 }

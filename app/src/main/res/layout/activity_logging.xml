@@ -1,67 +1,66 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/loginScreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="25dp"
-    android:layout_marginTop="50dp"
-    android:layout_marginRight="25dp"
-    android:layout_marginBottom="50dp"
-    android:orientation="vertical"
-    tools:context=".activities.LoggingActivity">
-
-
-    <TextView
-        android:id="@+id/textLogin"
+    android:layout_margin="20dp"
+    android:scrollbars="none">
+    <LinearLayout
+        android:id="@+id/loginScreen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="@string/log_in"
-        android:textColor="@color/black"
-        android:textSize="30sp" />
+        android:orientation="vertical"
+        tools:context=".activities.LoggingActivity">
 
-    <EditText
-        android:id="@+id/inputMail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:ems="10"
-        android:gravity="center"
-        android:hint="@string/mail_hint"
-        android:inputType="textPersonName" />
+        <TextView
+            android:id="@+id/textLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/log_in"
+            android:textColor="@color/black"
+            android:textSize="30sp" />
 
-    <EditText
-        android:id="@+id/inputPass"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:ems="10"
-        android:gravity="center"
-        android:hint="@string/pass_hint"
-        android:inputType="textPassword" />
+        <EditText
+            android:id="@+id/inputMail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:ems="10"
+            android:gravity="center"
+            android:hint="@string/mail_hint"
+            android:inputType="textPersonName" />
 
-    <Button
-        android:id="@+id/registerBut"
-        android:layout_width="300dp"
-        android:layout_gravity="center"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="@string/register_button"
-        android:textColor="@color/white"
-        android:textSize="15sp"
-        android:background="@color/light_red" />
+        <EditText
+            android:id="@+id/inputPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:ems="10"
+            android:gravity="center"
+            android:hint="@string/pass_hint"
+            android:inputType="textPassword" />
 
-    <Button
-        android:id="@+id/loginBut"
-        android:layout_width="300dp"
-        android:layout_gravity="center"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:text="@string/loging_button"
-        android:textColor="@color/white"
-        android:textSize="15sp"
-        android:background="@color/dark_blue"/>
+        <Button
+            android:id="@+id/registerBut"
+            android:layout_width="300dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="@string/register_button"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:background="@drawable/button_effect_blue"/>
 
-</LinearLayout>
+        <Button
+            android:id="@+id/loginBut"
+            android:layout_width="300dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="@string/loging_button"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:background="@drawable/button_effect_red"/>
+
+    </LinearLayout>
+</ScrollView>
